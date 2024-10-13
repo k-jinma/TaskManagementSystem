@@ -1,5 +1,6 @@
 package system;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import data.Task;
@@ -11,7 +12,10 @@ public class Main {
 		// １．終了できるようにしてください
 		// ２．タスクを配列で管理してください（2作成、1表示）
 		
-		Task[] tasks = new Task[100];
+		int taskCnt = 100;
+		
+//		Task[] tasks = new Task[taskCnt];
+		ArrayList<Task> lists = new ArrayList<>();
 
 		do {
 			System.out.println("--------------------");
@@ -24,31 +28,33 @@ public class Main {
 			System.out.print("入力:");
 			Scanner sc = new Scanner(System.in);
 			int input = sc.nextInt();
+			
 			if (input == 1) {
-				if( tasks[0] != null) {
+				if( lists.size() != 0 ) {
 					System.out.println("タスク一覧表示");
 					
 					// 拡張forの場合
-					for( Task t : tasks ) {
-						if( t != null) {
-							System.out.print(t.getNo());
-							
-						}
+					for( Task t : lists ) {
 						
+						System.out.print(t.getNo());
+						System.out.print(t.getTaskName());
+						System.out.print(t.getTimeLimit1());
+						System.out.print(t.getTimeLimit2());
+						System.out.print(t.getComp());
+						System.out.println(); //改行
+	
 					}
-					
-					for( int i = 0; i < tasks.length; i++ ) {
-						if( tasks[i] != null ) {
-							System.out.print(tasks[i].getNo());
-							System.out.print( " " + tasks[i].getTaskName());
-							System.out.print( " " + tasks[i].getTimeLimit1());
-							System.out.print( " " + tasks[i].getTimeLimit2());
-							System.out.print( " " + tasks[i].getComp());
-							System.out.println(); //改行
-							
-						}
-						
-					}
+					// 通常のforの場合
+//					for( int i = 0; i < lists.size(); i++ ) {
+//						
+//						System.out.print(lists.get(i).getNo());
+//						System.out.print(lists.get(i).getTaskName());
+//						System.out.print(lists.get(i).getTimeLimit1());
+//						System.out.print(lists.get(i).getTimeLimit2());
+//						System.out.print( lists.get(i).getComp());
+//						System.out.println(); //改行
+//						
+//					}
 					
 				}else {
 					System.out.println("タスクがありません");
@@ -58,28 +64,52 @@ public class Main {
 			} else if (input == 2) {
 				System.out.println("タスク作成");
 				
+				if (lists.size() == 100) {
+					System.out.println("これ以上登録できません");
+					continue;
+				}
+				
 				System.out.print("No入力：");
 				int no = sc.nextInt();
 				sc.nextLine(); //改行を捨てる
 				
+				System.out.print("タスク名入力：");
 				String taskName = sc.nextLine();
 				
-				//宿題1：残りの部分も入力できるようにする
-				//宿題2：100件以上作れないようにする
+				System.out.print("期限を入力（yyyyMMdd）：");
+				String startDate = sc.nextLine();
 				
-				for( int i = 0; i < tasks.length; i++ ) {
-					if( tasks[i] == null ) {
-						tasks[i] = new Task(no, taskName, "2024/9/20", "15:00", "済");
-						break;
-					}
-				}
+				System.out.print("期限を入力（hh:mm)：");
+				String endTime = sc.nextLine();
 				
+				Task t = new Task(no, taskName, startDate, endTime, "未");
+				lists.add(t);
 
 			} else if (input == 3) {
 				System.out.println("タスク修正");
 
 			} else if (input == 4) {
 				System.out.println("タスク削除");
+				
+				for( int i = 0, j = 1; i < lists.size(); i++, j++ ) {
+					
+					System.out.print(j + " : ");
+					System.out.print(lists.get(i).getNo());
+					System.out.print(lists.get(i).getTaskName());
+					System.out.print(lists.get(i).getTimeLimit1());
+					System.out.print(lists.get(i).getTimeLimit2());
+					System.out.print( lists.get(i).getComp());
+					System.out.println(); //改行
+					
+				}
+				
+				
+				System.out.print("削除するNoを入力：");
+				int no = sc.nextInt();
+				sc.nextLine(); //改行を捨てる	
+				
+				lists.remove(no-1);
+				
 
 			} else if( input == 5 ){
 				System.out.println("終了します");
