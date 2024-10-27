@@ -12,7 +12,7 @@ public class Main {
 		// １．終了できるようにしてください
 		// ２．タスクを配列で管理してください（2作成、1表示）
 		
-		int taskCnt = 100;
+//		int taskCnt = 100;
 		
 //		Task[] tasks = new Task[taskCnt];
 		ArrayList<Task> lists = new ArrayList<>();
@@ -28,19 +28,25 @@ public class Main {
 			System.out.print("入力:");
 			Scanner sc = new Scanner(System.in);
 			int input = sc.nextInt();
+			sc.nextLine(); //改行を捨てる
 			
 			if (input == 1) {
 				if( lists.size() != 0 ) {
 					System.out.println("タスク一覧表示");
 					
+					System.out.println("---------------------------------------------");
+					System.out.printf("%-4s%-10s\n","NO","タスク名");
+					System.out.println("---------------------------------------------");
+					
 					// 拡張forの場合
 					for( Task t : lists ) {
 						
-						System.out.print(t.getNo());
-						System.out.print(t.getTaskName());
-						System.out.print(t.getTimeLimit1());
-						System.out.print(t.getTimeLimit2());
-						System.out.print(t.getComp());
+						//System.out.print(t.getNo() + "  ");
+						System.out.printf("%-4d", t.getNo() );
+						System.out.printf("%-10s",t.getTaskName() );
+						System.out.print(t.getTimeLimit1() + "  ");
+						System.out.print(t.getTimeLimit2() + "  ");
+						System.out.print(t.getComp() + "  ");
 						System.out.println(); //改行
 	
 					}
@@ -69,9 +75,9 @@ public class Main {
 					continue;
 				}
 				
-				System.out.print("No入力：");
-				int no = sc.nextInt();
-				sc.nextLine(); //改行を捨てる
+//				System.out.print("No入力：");
+//				int no = sc.nextInt();
+//				sc.nextLine(); //改行を捨てる
 				
 				System.out.print("タスク名入力：");
 				String taskName = sc.nextLine();
@@ -82,8 +88,16 @@ public class Main {
 				System.out.print("期限を入力（hh:mm)：");
 				String endTime = sc.nextLine();
 				
+				//リストにデータがある場合、最後のNoを取得
+				//ない場合、1を設定
+				int no = 1;
+				if (lists.size() > 0) {
+					no = lists.getLast().getNo()+1;
+				}
+				
 				Task t = new Task(no, taskName, startDate, endTime, "未");
 				lists.add(t);
+				
 
 			} else if (input == 3) {
 				System.out.println("タスク修正");
@@ -108,7 +122,15 @@ public class Main {
 				int no = sc.nextInt();
 				sc.nextLine(); //改行を捨てる	
 				
-				lists.remove(no-1);
+				// 削除するタスクがありませんのような	メッセージを表示したい
+				for (int i = 0; i < lists.size(); i++) {
+					if (lists.get(i).getNo() == no) {
+						lists.remove(i);
+						System.out.println("削除しました");
+						break;
+					}
+				}
+				
 				
 
 			} else if( input == 5 ){
