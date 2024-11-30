@@ -67,7 +67,7 @@ public class Main {
 			
 		} while (true);
 				
-		
+		sc.close();
 	}
 
 }
