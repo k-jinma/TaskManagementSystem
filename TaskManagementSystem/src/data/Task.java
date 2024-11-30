@@ -4,7 +4,7 @@ public class Task {
 
 	private int no; //No
 	private String taskName; //タスク名
-	private String timeLimit1; //期限（年月日）
+	private String timeLimit1; //期限（年/月/日）
 	private String timeLimit2; //時間
 	private String comp; //済, 未
 	
