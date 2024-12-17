@@ -41,13 +41,31 @@ public class Main {
 					
 				} else if (input == 2) {
 					
-					Task task = new Task( 1,"タスク1", "2024/12/24", "23:59", "未");
+					System.out.print("タスク名を入力してください:");
+					String taskName = sc.nextLine();
+					System.out.print("期限（年月日）を入力してください:");
+					String timeLimit1 = sc.nextLine();
+					System.out.print("時間を入力してください:");
+					String timeLimit2 = sc.nextLine();
+					
+					Task task = new Task( 1,taskName, timeLimit1, timeLimit2, "未");
 					lists.add(task);
 
 				} else if (input == 3) {
 
 					
 				} else if (input == 4) {
+					
+					for (int i = 0; i < lists.size(); i++) {
+						System.out.println(i+1 + "：" + lists.get(i).getTaskName());
+					}
+					
+					System.out.print("削除する番号を入力してください：");
+					int no = sc.nextInt();
+					sc.nextLine(); //改行までを捨てる
+					
+					lists.remove(no-1);
+					
 
 
 				} else if (input == 5) {
