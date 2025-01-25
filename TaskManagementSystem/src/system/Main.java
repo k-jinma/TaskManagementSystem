@@ -9,50 +9,35 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import data.Task;
 
 public class Main {
+	
+	
+	// ファイルの書き込みは３つのクラスを使う
+	// 1. File
+	// 2. FileWriter
+	// 3. BufferedWriter
+	
+	// ファイルの読み込みは３つのクラスを使う
+	// 1. File
+	// 2. FileReader
+	// 3. BufferedReader
+	
+	static ArrayList<Task> lists = new ArrayList<>();
+	static File file = new File("data.csv");
+	static FileWriter fw;
+	static BufferedWriter bw;
+	
+	
 
 	public static void main(String[] args) {
 		
-		// ファイルの書き込みは３つのクラスを使う
-		// 1. File
-		// 2. FileWriter
-		// 3. BufferedWriter
-		
-		// ファイルの読み込みは３つのクラスを使う
-		// 1. File
-		// 2. FileReader
-		// 3. BufferedReader
-		
-		ArrayList<Task> lists = new ArrayList<>();
-		File file = new File("data.csv");
-		FileWriter fw;
-		BufferedWriter bw;
-		
-		try {
-			FileReader fr = new FileReader(file);
-			BufferedReader br = new BufferedReader(fr);
-			
-			String line;
-			while ((line = br.readLine()) != null) {
-				
-				String[] a = line.split(",");
-				Task t = new Task(Integer.parseInt(a[0]), a[1], a[2], a[3], a[4]);
-				//Task.TaskSu++;
-				lists.add(t);
-			}
-			
-			
-		} catch (FileNotFoundException e) {
-			// TODO 自動生成された catch ブロック
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO 自動生成された catch ブロック
-			e.printStackTrace();
-		}
-		
+		// 保存されたファイルの読み込み
+		readDataFile();
 
 
 		Scanner sc = new Scanner(System.in); // System.in = 標準入力(キーボード)からの入力
@@ -79,11 +64,9 @@ public class Main {
 						continue;
 					}
 					
-					// 11/30宿題　リストにある全てのタスク一覧表示をする
-					for (int i = 0; i < lists.size(); i++) {
-						System.out.print(i + 1 + "：" + lists.get(i).getTaskName() + " " +  lists.get(i).getComp() + " " + lists.get(i).getTimeLimit1() + " " + lists.get(i).getTimeLimit2() + "\n");
-						
-					}
+					
+					dispList();
+					
 					
 					
 				} else if (input == 2) {
@@ -110,13 +93,68 @@ public class Main {
 					String taskName = sc.nextLine();
 					System.out.print("期限（年月日）を入力してください:");
 					String timeLimit1 = sc.nextLine();
+					
+					
+			        // 日付の形式を検証するための正規表現
+			        String regex = "^\\d{4}/\\d{2}/\\d{2}$";
+			        Pattern pattern = Pattern.compile(regex);
+			        Matcher matcher = pattern.matcher(timeLimit1);
+			        
+			        if (!matcher.matches()) {
+			        	System.out.println("yyyy/mm/dd形式で入力してください");
+			            continue;
+			        }
+					
+					
 					System.out.print("時間を入力してください:");
 					String timeLimit2 = sc.nextLine();
+					
+					
+					
+					
 					
 					Task task = new Task( 1,taskName, timeLimit1, timeLimit2, "未");
 					lists.add(task);
 
 				} else if (input == 4) {
+					
+					if (lists.size() == 0) {
+						System.out.println("タスクがありません");
+						continue;
+					}
+					
+					dispList();
+					
+					System.out.print("修正する番号を入力してください：");
+					int no1 = sc.nextInt();
+					sc.nextLine(); //改行までを捨てる
+					
+					String display = """
+							1：タスク名
+							2：済／未
+							3：期限（年月日）
+							4：期限（時間）
+							""";
+					
+					System.out.println(display);
+					
+					System.out.print("項目番号を入力してください：");
+					int no2 = sc.nextInt();
+					sc.nextLine(); //改行までを捨てる
+					
+					
+					System.out.print("修正内容を入力してください：");
+					String text = sc.nextLine();
+					
+					if( no2 == 1 ) {
+						lists.get(no1-1).setTaskName(text);
+					}else if( no2 == 2 ) {
+						lists.get(no1-1).setComp(text);
+					}else if( no2 == 3 ) {
+						lists.get(no1-1).setTimeLimit1(text);
+					}else if( no2 == 4 ) {
+						lists.get(no1-1).setTimeLimit2(text);
+					}
 
 					
 				} else if (input == 5) {
@@ -149,12 +187,12 @@ public class Main {
 					break;
 					
 				} else {
-					System.out.println("1～5の数字を入力してください");
+					System.out.println("1～5,9の数字を入力してください");
 					
 				}
 				
 			} catch (Exception e) {
-				System.out.println("1～5の数字を入力してください");
+				System.out.println("1～5,9の数字を入力してください");
 				sc.nextLine(); //改行までを捨てる
 			}
 			
@@ -163,5 +201,48 @@ public class Main {
 				
 		sc.close();
 	}
+	
+	static void readDataFile() {
 
+		
+		try {
+			FileReader fr = new FileReader(file);
+			BufferedReader br = new BufferedReader(fr);
+			
+			String line;
+			while ((line = br.readLine()) != null) {
+				
+				String[] a = line.split(",");
+				Task t = new Task(Integer.parseInt(a[0]), a[1], a[2], a[3], a[4]);
+				//Task.TaskSu++;
+				lists.add(t);
+			}
+			
+			
+		} catch (FileNotFoundException e) {
+			System.out.println("ファイルがありません");
+			
+		} catch (IOException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}
+	}
+
+	static void dispList() {
+		// 11/30宿題　リストにある全てのタスク一覧表示をする
+		for (int i = 0; i < lists.size(); i++) {
+			System.out.print(i + 1 + "：" + lists.get(i).getTaskName() + " " +  lists.get(i).getComp() + " " + lists.get(i).getTimeLimit1() + " " + lists.get(i).getTimeLimit2() + "\n");
+			
+		}
+	}
+	
 }
+
+
+
+
+
+
+
+
+
