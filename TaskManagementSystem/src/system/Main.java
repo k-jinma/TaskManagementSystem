@@ -71,7 +71,8 @@ public class Main {
 					
 				} else if (input == 2) {
 					
-					for (int i = 0; i < lists.size(); i++) {
+					int i;
+					for (i = 0; i < lists.size(); i++) {
 						
 						if (lists.get(i).getComp().equals("済")) {
 							continue;
@@ -84,7 +85,17 @@ public class Main {
 					int no = sc.nextInt();
 					sc.nextLine(); //改行までを捨てる
 					
+					
+					if (lists.size() < no || lists.get(no-1).getComp().equals("済")) {
+						System.out.println("正しい番号を入力してください");
+						continue;
+					}
+					
+					
 					lists.get(no-1).setComp("済");
+					System.out.println("完了しました");
+					
+				
 					
 				
 				} else if (input == 3) {
@@ -105,10 +116,36 @@ public class Main {
 			            continue;
 			        }
 					
-					
 					System.out.print("時間を入力してください:");
 					String timeLimit2 = sc.nextLine();
 					
+					//regex = "^\\d{2}:\\d{2}$";
+					regex = "^(?:[01]\\d|2[0-3]):[0-5]\\d$";
+					/*
+					 	^：文字列の先頭を示します。
+						(?:[01]\\d|2[0-3])：時間の部分を表します。
+						[01]\\d：00から19までの時間を表します。
+							[01]：0または1
+							\\d：任意の数字（0-9）
+						|：または
+						2[0-3]：20から23までの時間を表します。
+							2：2
+							[0-3]：0から3までの任意の数字
+						:：コロンを表します。
+						[0-5]\\d：分の部分を表します。
+						[0-5]：0から5までの任意の数字
+						\\d：任意の数字（0-9）
+						$：文字列の末尾を示します。
+						この正規表現は、時間が00:00から23:59の範囲内であることを検証します。
+					 */
+
+					pattern = Pattern.compile(regex);
+					Matcher matcher2 = pattern.matcher(timeLimit2);
+					
+					if (!matcher2.matches()) {
+						System.out.println("hh:mm形式で入力してください");
+						continue;
+					}
 					
 					
 					
@@ -123,38 +160,54 @@ public class Main {
 						continue;
 					}
 					
-					dispList();
+					int no1;
+					int no2;
 					
-					System.out.print("修正する番号を入力してください：");
-					int no1 = sc.nextInt();
-					sc.nextLine(); //改行までを捨てる
+					do {
+						dispList();
+						System.out.print("修正する番号を入力してください：");
+						no1 = sc.nextInt();
+						sc.nextLine(); //改行までを捨てる
+						String display = """
+								1：タスク名
+								2：済／未
+								3：期限（年月日）
+								4：期限（時間）
+								""";
+						System.out.println(display);
+						System.out.print("項目番号を入力してください：");
+						no2 = sc.nextInt();
+						sc.nextLine(); //改行までを捨てる
+						if (no2 < 1 || no2 > 4) {
+							System.out.println("1～4の数字を入力してください");
+						} else {
+							break;
+						}
+					} while (true);
 					
-					String display = """
-							1：タスク名
-							2：済／未
-							3：期限（年月日）
-							4：期限（時間）
-							""";
 					
-					System.out.println(display);
-					
-					System.out.print("項目番号を入力してください：");
-					int no2 = sc.nextInt();
-					sc.nextLine(); //改行までを捨てる
-					
-					
-					System.out.print("修正内容を入力してください：");
-					String text = sc.nextLine();
-					
-					if( no2 == 1 ) {
-						lists.get(no1-1).setTaskName(text);
-					}else if( no2 == 2 ) {
-						lists.get(no1-1).setComp(text);
-					}else if( no2 == 3 ) {
-						lists.get(no1-1).setTimeLimit1(text);
-					}else if( no2 == 4 ) {
-						lists.get(no1-1).setTimeLimit2(text);
-					}
+					do {
+						System.out.print("修正内容を入力してください：");
+						String text = sc.nextLine();
+						if (no2 == 1) {
+							lists.get(no1 - 1).setTaskName(text);
+						} else if (no2 == 2) {
+
+							if (text.equals("済") || text.equals("未")) {
+								lists.get(no1 - 1).setComp(text);
+								break;
+							} else {
+								System.out.println("済または未を入力してください");
+							}
+
+						} else if (no2 == 3) {
+							lists.get(no1 - 1).setTimeLimit1(text);
+							break;
+						} else if (no2 == 4) {
+							lists.get(no1 - 1).setTimeLimit2(text);
+							break;
+						} 
+					} while (true);
 
 					
 				} else if (input == 5) {
